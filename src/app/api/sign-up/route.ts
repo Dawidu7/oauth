@@ -72,7 +72,7 @@ export async function POST(request: NextRequest) {
     console.error(e)
 
     return NextResponse.json(
-      { error: "An unknown error has occured" },
+      { error: "Internal Server Error" },
       { status: 500 },
     )
   }
