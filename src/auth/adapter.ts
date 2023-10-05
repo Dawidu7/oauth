@@ -25,11 +25,7 @@ export default function adapter(): InitializeAdapter<Adapter> {
       try {
         await db.transaction(async tx => {
           await tx.insert(users).values(user)
-          await tx.insert(keys).values({
-            ...key,
-            userId: key.user_id,
-            hashedPassword: key.hashed_password,
-          })
+          await tx.insert(keys).values(key)
         })
       } catch (e) {
         const error = e as Partial<Error>
@@ -63,15 +59,10 @@ export default function adapter(): InitializeAdapter<Adapter> {
         .limit(1)
         .then(rows => rows[0] ?? null),
     getSessionsByUserId: async userId =>
-      await db.select().from(sessions).where(eq(sessions.userId, userId)),
+      await db.select().from(sessions).where(eq(sessions.user_id, userId)),
     setSession: async session => {
       try {
-        await db.insert(sessions).values({
-          id: session.id,
-          userId: session.user_id,
-          activeExpires: session.active_expires,
-          idleExpires: session.idle_expires,
-        })
+        await db.insert(sessions).values(session)
       } catch (e) {
         const error = e as Partial<Error>
 
@@ -94,7 +85,7 @@ export default function adapter(): InitializeAdapter<Adapter> {
       }
     },
     deleteSessionsByUserId: async userId => {
-      await db.delete(sessions).where(eq(sessions.userId, userId))
+      await db.delete(sessions).where(eq(sessions.user_id, userId))
     },
     updateSession: async (sessionId, partialSession) => {
       await db
@@ -108,35 +99,12 @@ export default function adapter(): InitializeAdapter<Adapter> {
         .from(keys)
         .where(eq(keys.id, keyId))
         .limit(1)
-        .then(rows =>
-          rows[0]
-            ? {
-                ...rows[0],
-                user_id: rows[0].userId,
-                hashed_password: rows[0].hashedPassword,
-              }
-            : null,
-        ),
+        .then(rows => rows[0] ?? null),
     getKeysByUserId: async userId =>
-      await db
-        .select()
-        .from(keys)
-        .where(eq(keys.userId, userId))
-        .then(rows =>
-          rows.map(row => ({
-            ...row,
-            user_id: row.userId,
-            hashed_password: row.hashedPassword,
-          })),
-        ),
+      await db.select().from(keys).where(eq(keys.user_id, userId)),
     setKey: async key => {
-      console.log(key)
       try {
-        await db.insert(keys).values({
-          ...key,
-          userId: key.user_id,
-          hashedPassword: key.hashed_password,
-        })
+        await db.insert(keys).values(key)
       } catch (e) {
         const error = e as Partial<Error>
 
@@ -162,7 +130,7 @@ export default function adapter(): InitializeAdapter<Adapter> {
       }
     },
     deleteKeysByUserId: async userId => {
-      await db.delete(keys).where(eq(keys.userId, userId))
+      await db.delete(keys).where(eq(keys.user_id, userId))
     },
     updateKey: async (keyId, partialKey) => {
       await db.update(keys).set(partialKey).where(eq(keys.id, keyId))

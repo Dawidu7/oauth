@@ -13,25 +13,25 @@ export type User = InferInsertModel<typeof users>
 
 export const keys = pgTable("keys", {
   id: varchar("id", { length: 255 }).primaryKey(),
-  userId: varchar("user_id", { length: 15 })
+  user_id: varchar("user_id", { length: 15 })
     .notNull()
     .references(() => users.id, {
       onDelete: "cascade",
     }),
-  hashedPassword: varchar("hashed_password", { length: 255 }),
+  hashed_password: varchar("hashed_password", { length: 255 }),
 })
 
 export type Key = InferInsertModel<typeof keys>
 
 export const sessions = pgTable("sessions", {
   id: varchar("id", { length: 255 }).primaryKey(),
-  userId: varchar("user_id", { length: 15 })
+  user_id: varchar("user_id", { length: 15 })
     .notNull()
     .references(() => users.id, {
       onDelete: "cascade",
     }),
-  activeExpires: bigint("active_expires", { mode: "bigint" }).notNull(),
-  idleExpires: bigint("idle_expires", { mode: "bigint" }).notNull(),
+  active_expires: bigint("active_expires", { mode: "bigint" }).notNull(),
+  idle_expires: bigint("idle_expires", { mode: "bigint" }).notNull(),
 })
 
 export type Session = InferInsertModel<typeof sessions>

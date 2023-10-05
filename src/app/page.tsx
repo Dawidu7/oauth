@@ -1,4 +1,8 @@
-export default function Home() {
+import { getSession } from "~/auth/utils"
+
+export default async function Home() {
+  const { session } = await getSession()
+
   return (
     <div className="flex w-full justify-evenly">
       <form action="/api/sign-in" method="POST">
@@ -8,6 +12,13 @@ export default function Home() {
         <input type="password" name="password" placeholder="Password" />
         <input type="submit" value="Sign In" />
       </form>
+      {session && (
+        <form action="/api/sign-out" method="POST">
+          <h1>Sign Out</h1>
+          <hr />
+          <input type="submit" value="Sign Out" />
+        </form>
+      )}
       <form action="/api/sign-up" method="POST">
         <h1>Sign Up</h1>
         <hr />
