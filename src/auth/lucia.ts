@@ -1,8 +1,9 @@
 import { lucia } from "lucia"
 import { nextjs_future } from "lucia/middleware"
+import { github } from "@lucia-auth/oauth/providers"
 import adapter from "./adapter"
 
-const auth = lucia({
+export const auth = lucia({
   adapter: adapter(),
   env: process.env.NODE_ENV === "development" ? "DEV" : "PROD",
   middleware: nextjs_future(),
@@ -17,6 +18,10 @@ const auth = lucia({
   }),
 })
 
-export default auth
+export const githubAuth = github(auth, {
+  clientId: process.env.GITHUB_ID ?? "",
+  clientSecret: process.env.GITHUB_SECRET ?? "",
+  scope: ["user:email"],
+})
 
 export type Auth = typeof lucia

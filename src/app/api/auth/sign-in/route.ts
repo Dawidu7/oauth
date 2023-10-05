@@ -1,37 +1,24 @@
 import * as context from "next/headers"
 import { NextResponse } from "next/server"
 import type { NextRequest } from "next/server"
-import type { PostgresError } from "postgres"
-import auth from "~/auth/lucia"
+import { LuciaError } from "lucia"
+import { auth } from "~/auth/lucia"
 import { EMAIL_REGEX, NAME_REGEX, PASSWORD_REGEX_1 } from "~/lib/utils"
 
 export async function POST(request: NextRequest) {
   const formData = await request.formData()
-  const attributes = {
-    email: formData.get("email"),
-    handle: formData.get("handle"),
-    name: formData.get("name"),
-  }
+  const _name = formData.get("name")
   const password = formData.get("password")
 
-  if (
-    typeof attributes.email !== "string" ||
-    !EMAIL_REGEX.test(attributes.email as string)
-  ) {
-    return NextResponse.json({ error: "Invalid Email" }, { status: 400 })
-  }
+  if (typeof _name === "string") {
+    if (_name.toString().includes("@") && !EMAIL_REGEX.test(_name)) {
+      return NextResponse.json({ error: "Invalid Email" }, { status: 400 })
+    }
 
-  if (
-    typeof attributes.handle !== "string" ||
-    !NAME_REGEX.test(attributes.handle)
-  ) {
-    return NextResponse.json({ error: "Invalid Handle" }, { status: 400 })
-  }
-
-  if (
-    typeof attributes.name !== "string" ||
-    !NAME_REGEX.test(attributes.name)
-  ) {
+    if (!_name.toString().includes("@") && !NAME_REGEX.test(_name)) {
+      return NextResponse.json({ error: "Invalid Name" }, { status: 400 })
+    }
+  } else {
     return NextResponse.json({ error: "Invalid Name" }, { status: 400 })
   }
 
@@ -40,26 +27,17 @@ export async function POST(request: NextRequest) {
   }
 
   try {
-    // Create User
-    const { userId } = await auth.createUser({
-      attributes,
-      key: {
-        providerId: "email",
-        providerUserId: attributes.email.toLowerCase(),
-        password,
-      },
-    })
-
-    await auth.createKey({
-      userId,
-      providerId: "username",
-      providerUserId: attributes.handle.toLowerCase(),
+    // Authenticate User
+    const name = _name!.toString()
+    const key = await auth.useKey(
+      name.includes("@") ? "email" : "username",
+      name,
       password,
-    })
+    )
 
     // Create Session
     const session = await auth.createSession({
-      userId,
+      userId: key.userId,
       attributes: {},
     })
 
@@ -69,6 +47,17 @@ export async function POST(request: NextRequest) {
 
     return NextResponse.redirect(new URL("/", request.url), { status: 302 })
   } catch (e) {
+    if (
+      e instanceof LuciaError &&
+      (e.message === "AUTH_INVALID_KEY_ID" ||
+        e.message === "AUTH_INVALID_PASSWORD")
+    ) {
+      return NextResponse.json(
+        { error: "Invalid Credentials" },
+        { status: 400 },
+      )
+    }
+
     console.error(e)
 
     return NextResponse.json(

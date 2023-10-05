@@ -2,7 +2,7 @@
 
 import * as context from "next/headers"
 import { redirect } from "next/navigation"
-import auth from "./lucia"
+import { auth } from "./lucia"
 
 export async function getSession() {
   const authRequest = auth.handleRequest("GET", context)
