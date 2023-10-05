@@ -7,6 +7,14 @@
     @apply flex h-min flex-col gap-4 rounded-xl bg-white p-4 shadow-sm shadow-black;
   }
 
+  form > section {
+    @apply flex items-center gap-2;
+  }
+
+  form > section > * {
+    @apply flex-1;
+  }
+
   h1 {
     @apply text-3xl font-bold;
   }
@@ -19,7 +27,7 @@
     @apply border;
   }
 
-  input[type="submit"] {
+  [type="submit"] {
     @apply rounded bg-blue-500 px-4 py-2 font-bold text-white hover:cursor-pointer hover:bg-blue-600;
   }
 }

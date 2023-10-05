@@ -1,3 +1,4 @@
+import { BsGithub, BsGoogle } from "react-icons/bs"
 import { getSession } from "~/auth/utils"
 
 export default async function Home() {
@@ -11,12 +12,27 @@ export default async function Home() {
         <input type="text" name="name" placeholder="Email or Name" />
         <input type="password" name="password" placeholder="Password" />
         <input type="submit" value="Sign In" />
-        <section className="flex items-center">
-          <hr className="flex-1" />
-          <p className="z-10 bg-white px-2">or</p>
-          <hr className="flex-1" />
+        <section>
+          <hr />
+          <p className="z-10 flex-none bg-white px-2">or</p>
+          <hr />
         </section>
-        <input formAction="/api/auth/github" type="submit" value="Github" />
+        <section>
+          <button
+            className="bg-slate-900 hover:bg-black"
+            type="submit"
+            formAction="/api/auth/github"
+          >
+            <BsGithub className="mx-auto h-6 w-6" />
+          </button>
+          <button
+            className="bg-rose-500 hover:bg-rose-600"
+            type="submit"
+            formAction="/api/auth/google"
+          >
+            <BsGoogle className="mx-auto h-6 w-6" />
+          </button>
+        </section>
       </form>
       {session && (
         <form action="/api/auth/sign-out" method="POST">
