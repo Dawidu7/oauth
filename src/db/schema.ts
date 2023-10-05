@@ -10,14 +10,18 @@ export const users = pgTable("users", {
 
 export const keys = pgTable("keys", {
   id: varchar("id", { length: 15 }).primaryKey(),
-  userId: varchar("user_id", { length: 15 }),
+  userId: varchar("user_id", { length: 15 }).references(() => users.id, {
+    onDelete: "cascade",
+  }),
   hashedPassword: varchar("hashed_password", { length: 255 }),
   primary: boolean("primary"),
 })
 
 export const sessions = pgTable("sessions", {
   id: varchar("id", { length: 15 }).primaryKey(),
-  userId: varchar("user_id", { length: 15 }),
+  userId: varchar("user_id", { length: 15 }).references(() => users.id, {
+    onDelete: "cascade",
+  }),
   activeExpires: bigint("active_expires", { mode: "bigint" }),
   idleExpires: bigint("idle_expires", { mode: "bigint" }),
 })
