@@ -1,3 +1,25 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer base {
+  form {
+    @apply flex h-min flex-col gap-4 rounded bg-white p-4 shadow-sm shadow-black;
+  }
+
+  h1 {
+    @apply text-3xl font-bold;
+  }
+
+  hr {
+    @apply -mx-4;
+  }
+
+  input:not([type="submit"]) {
+    @apply border;
+  }
+
+  input[type="submit"] {
+    @apply rounded bg-blue-500 px-4 py-2 font-bold text-white hover:cursor-pointer hover:bg-blue-600;
+  }
+}

@@ -2,7 +2,7 @@ import { lucia } from "lucia"
 import { nextjs_future } from "lucia/middleware"
 import adapter from "./adapter"
 
-export default lucia({
+const auth = lucia({
   adapter: adapter(),
   env: process.env.NODE_ENV === "development" ? "DEV" : "PROD",
   middleware: nextjs_future(),
@@ -16,5 +16,7 @@ export default lucia({
     createdAt: data.createdAt,
   }),
 })
+
+export default auth
 
 export type Auth = typeof lucia

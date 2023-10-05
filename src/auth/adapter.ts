@@ -25,7 +25,11 @@ export default function adapter(): InitializeAdapter<Adapter> {
       try {
         await db.transaction(async tx => {
           await tx.insert(users).values(user)
-          await tx.insert(keys).values({ ...key, userId: user.id })
+          await tx.insert(keys).values({
+            ...key,
+            userId: key.user_id,
+            hashedPassword: key.hashed_password,
+          })
         })
       } catch (e) {
         const error = e as Partial<Error>
@@ -62,7 +66,12 @@ export default function adapter(): InitializeAdapter<Adapter> {
       await db.select().from(sessions).where(eq(sessions.userId, userId)),
     setSession: async session => {
       try {
-        await db.insert(sessions).values(session)
+        await db.insert(sessions).values({
+          id: session.id,
+          userId: session.user_id,
+          activeExpires: session.active_expires,
+          idleExpires: session.idle_expires,
+        })
       } catch (e) {
         const error = e as Partial<Error>
 
@@ -121,6 +130,7 @@ export default function adapter(): InitializeAdapter<Adapter> {
           })),
         ),
     setKey: async key => {
+      console.log(key)
       try {
         await db.insert(keys).values({
           ...key,

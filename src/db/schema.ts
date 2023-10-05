@@ -12,7 +12,7 @@ export const users = pgTable("users", {
 export type User = InferInsertModel<typeof users>
 
 export const keys = pgTable("keys", {
-  id: varchar("id", { length: 15 }).primaryKey(),
+  id: varchar("id", { length: 255 }).primaryKey(),
   userId: varchar("user_id", { length: 15 })
     .notNull()
     .references(() => users.id, {
@@ -24,7 +24,7 @@ export const keys = pgTable("keys", {
 export type Key = InferInsertModel<typeof keys>
 
 export const sessions = pgTable("sessions", {
-  id: varchar("id", { length: 15 }).primaryKey(),
+  id: varchar("id", { length: 255 }).primaryKey(),
   userId: varchar("user_id", { length: 15 })
     .notNull()
     .references(() => users.id, {
