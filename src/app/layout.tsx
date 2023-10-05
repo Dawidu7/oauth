@@ -1,10 +1,25 @@
+import { getSession } from "~/auth/utils"
 import "~/globals.css"
 
-export default function Layout({ children }: Children) {
+export default async function Layout({
+  profile,
+  signIn,
+  signUp,
+}: Children & {
+  profile: React.ReactNode
+  signIn: React.ReactNode
+  signUp: React.ReactNode
+}) {
+  const { session } = await getSession()
+
   return (
     <html lang="en">
       <body className="grid min-h-screen place-items-center bg-neutral-200">
-        {children}
+        <main className="flex w-full items-center justify-evenly">
+          {signIn}
+          {session && profile}
+          {signUp}
+        </main>
       </body>
     </html>
   )
