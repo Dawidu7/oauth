@@ -16,9 +16,14 @@ export default async function Layout({
     <html lang="en">
       <body className="grid min-h-screen place-items-center bg-neutral-200">
         <main className="flex w-full items-center justify-evenly">
-          {signIn}
-          {session && profile}
-          {signUp}
+          {session ? (
+            profile
+          ) : (
+            <>
+              {signIn}
+              {signUp}
+            </>
+          )}
         </main>
       </body>
     </html>

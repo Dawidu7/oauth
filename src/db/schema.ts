@@ -6,7 +6,7 @@ export const users = pgTable("users", {
   email: varchar("email", { length: 255 }).notNull().unique(),
   handle: varchar("handle", { length: 20 }).notNull().unique(),
   name: varchar("name", { length: 20 }).notNull(),
-  createdAt: date("created_at").defaultNow(),
+  createdAt: date("created_at", { mode: "date" }).defaultNow(),
 })
 
 export type User = InferInsertModel<typeof users>

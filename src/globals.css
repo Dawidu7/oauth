@@ -4,7 +4,7 @@
 
 @layer base {
   form {
-    @apply flex h-min flex-col gap-4 rounded-xl bg-white p-4 shadow-sm shadow-black;
+    @apply flex h-min w-fit flex-col gap-4 rounded-xl bg-white p-4 shadow-sm shadow-black;
   }
 
   form > section {
